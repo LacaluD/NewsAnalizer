@@ -95,7 +95,7 @@ jobs:
       - name: Run pip-audit security linter
         run: |
           mkdir -p docs
-          pip-audit --format column | tee docs/pip-audit-report.txt
+          pip-audit --format columns | tee docs/pip-audit-report.txt
         shell: bash
         continue-on-error: false
 
