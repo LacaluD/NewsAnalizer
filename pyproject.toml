@@ -1,0 +1,42 @@
+[project]
+name = "NewsAnalizer"
+
+dependencies = [
+    "aiogram>=3.0.0",
+    "loguru>=0.7.3",
+    "feedparser>=6.0.0",
+    "trafilatura>=1.9.0",
+    "pydantic-settings>=2.14.1",
+    "python-dateutil>=2.8.0",
+    "aiohttp>=3.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "aiogram", "aiohttp", "feedparser", "loguru", "python-dateutil",
+    "requests", "trafilatura", "pydantic-settings", "pytest", "pytest-cov",
+    "coverage", "pip-tools", "pip-audit",
+]
+
+[tool.black]
+exclude = '''
+/(
+    \.venv
+  | version\.py
+)/
+'''
+
+[tool.ruff.lint]
+select = ["TID252"]  # Forbids relative imports
+
+[tool.coverage.run]
+source = ["src", "main"]
+omit = [
+    "tests/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_empty = true

@@ -1,0 +1,66 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.env
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# IDE / editor settings
+.idea/
+.vscode/
+.DS_Store
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+wheels/
+sdist/
+downloads/
+develop-eggs/
+*_cache*
+
+# Logs
+*.log
+logs/
+
+# Project-specific
+TODO.md
+PROJECT_GOAL.md
+PROJECT_STRUCTURE.md
+test_logs/
+TEMP/
+Garbage/
+_test.*
+.venv/
+content.*
+usefull_*.md
+configs/main*.json
+configs/gives*.json
+docs/*-report*
+docs/FIX_IDEAS.md
+docs/*.json
+PROJECT_PLAN.md
+.coverage
+
+
+# Other
+cython_debug/
+.pytype/
+__pypackages__/
+pipenv.lock
+.python-version
+/site
+.mo
+.pot
+pip-log.txt
+*.manifest
+*.spec
