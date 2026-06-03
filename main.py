@@ -1,6 +1,7 @@
 """Main application entry point."""
 
 from __future__ import annotations
+from typing import Any
 
 import asyncio
 
@@ -14,7 +15,7 @@ from src.session_manager import session_manager
 from version import __version__, __commit__, __build__
 
 
-async def run(tg_bot: TelegramBot, logger) -> None:
+async def run(tg_bot: TelegramBot, logger: Any) -> None:
     """Start the Telegram bot and perform graceful shutdown cleanup."""
     try:
         await tg_bot.main()
