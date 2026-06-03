@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.12, 3.11, 3.10]
+        python-version: ["3.12", "3.11", "3.10"]
     steps:
       - uses: actions/checkout@v6.0.0
         with:
@@ -50,7 +50,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6.0.0
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           fail_ci_if_error: false
           verbose: true
