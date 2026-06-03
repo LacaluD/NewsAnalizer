@@ -1,13 +1,15 @@
+[![CI](https://img.shields.io/github/actions/workflow/status/LacaluD/flowguard/main.yml?branch=main&label=CI)](https://github.com/LacaluD/flowguard/actions/workflows/main.yml)
+[![Coverage](https://codecov.io/gh/LacaluD/flowguard/graph/badge.svg?branch=main)](https://codecov.io/gh/LacaluD/flowguard)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+
 # Crypto News Bot
 
 Lightweight Telegram bot that fetches CoinDesk articles, extracts factual content, generates AI-based summaries, and posts the result to Telegram.
 
-> **Note:** This repository contains the base architecture and core business logic
-> of the project. The full production version with extended features runs privately.
-
-> **Note** This project was developed iteratively over X months.
-> The public repository contains a sanitized version —
-> private configuration and extra features have been removed.
+> **Note:** This repository contains the base architecture and core business logic of the project.
+> It was developed iteratively — the public version contains a sanitized codebase with private configuration and extended features removed.
+> The full production version with additional automation runs privately.
 
 ## Current Status
 
@@ -201,9 +203,7 @@ See also `docs/STACK.md`.
 
 ## TODO
 
-- Add scheduler for continuous automated posting.
-- Keep legacy `/analize` support until a future deprecation window is announced.
-- Add startup env validation command/check.
+- Expand and update tests + integration tests
 - Add stronger coverage threshold policy in CI.
 
 ## Development Recommendations

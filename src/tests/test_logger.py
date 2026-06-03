@@ -94,7 +94,8 @@ def test_init_logger_success_case(mocker) -> None:
 
 def test_init_logger_failure_case_when_ensure_fails(mocker) -> None:
     lg = MainLogger()
-    mocker.patch.object(lg, "ensure_log_path_exists", side_effect=RuntimeError("x"))
+    mocker.patch.object(lg, "ensure_log_path_exists",
+                        side_effect=RuntimeError("x"))
 
     with pytest.raises(RuntimeError):
         lg.init_logger()
@@ -153,7 +154,8 @@ def test_format_exception_short_edge_case_relative_to_fails(mocker) -> None:
         mocker.patch(
             "src.logger.traceback.extract_tb",
             return_value=[
-                traceback.FrameSummary("/tmp/outside.py", 7, "fn", line="x = 1")
+                traceback.FrameSummary(
+                    "/tmp/outside.py", 7, "fn", line="x = 1")
             ],
         )
         rendered = format_exception_short(exc)

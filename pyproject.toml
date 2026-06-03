@@ -23,6 +23,7 @@ exclude = '''
 /(
     \.venv
   | version\.py
+  | src/tests
 )/
 '''
 
