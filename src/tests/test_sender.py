@@ -44,18 +44,23 @@ class DummyDispatcher:
 def build_bot(mocker, service_result: PipelineResult) -> TelegramBot:
     mocker.patch(
         "src.bot.sender.Bot",
-        return_value=SimpleNamespace(send_message=mocker.AsyncMock()),
+        return_value=SimpleNamespace(
+            send_message=mocker.AsyncMock(),
+            set_my_commands=mocker.AsyncMock(),
+        ),
     )
     return TelegramBot(analyzing_service=DummyService(service_result))
 
 
 def test_parse_analyze_command_success_case() -> None:
-    cmd, url = TelegramBot._parse_analyze_command("/analyze https://coindesk.com/x")
+    cmd, url = TelegramBot._parse_analyze_command(
+        "/analyze https://coindesk.com/x")
     assert cmd == "/analyze" and url == "https://coindesk.com/x"
 
 
 def test_parse_analyze_command_failure_case_wrong_command() -> None:
-    cmd, url = TelegramBot._parse_analyze_command("/start https://coindesk.com/x")
+    cmd, url = TelegramBot._parse_analyze_command(
+        "/start https://coindesk.com/x")
     assert cmd is None and url is None
 
 
@@ -65,12 +70,14 @@ def test_parse_analyze_command_edge_case_missing_url() -> None:
 
 
 def test_parse_analize_command_alias_success_case() -> None:
-    cmd, url = TelegramBot._parse_analize_command("/analize https://coindesk.com/x")
-    assert cmd == "/analize" and url == "https://coindesk.com/x"
+    cmd, url = TelegramBot._parse_analize_command(
+        "/analyze https://coindesk.com/x")
+    assert cmd == "/analyze" and url == "https://coindesk.com/x"
 
 
 def test_parse_analize_command_alias_failure_case() -> None:
-    cmd, url = TelegramBot._parse_analize_command("/start https://coindesk.com/x")
+    cmd, url = TelegramBot._parse_analize_command(
+        "/start https://coindesk.com/x")
     assert cmd is None and url is None
 
 
@@ -80,11 +87,13 @@ def test_parse_analize_command_alias_edge_case_empty_text() -> None:
 
 
 def test_is_allowed_platform_success_case_main_domain() -> None:
-    assert TelegramBot._is_allowed_platform("https://coindesk.com/news") is True
+    assert TelegramBot._is_allowed_platform(
+        "https://coindesk.com/news") is True
 
 
 def test_is_allowed_platform_success_case_subdomain_edge() -> None:
-    assert TelegramBot._is_allowed_platform("https://www.sub.coindesk.com/news") is True
+    assert TelegramBot._is_allowed_platform(
+        "https://www.sub.coindesk.com/news") is True
 
 
 def test_is_allowed_platform_failure_case_bad_scheme() -> None:
@@ -123,7 +132,8 @@ def test_init_failure_case_value_error_when_factory_returns_none(mocker) -> None
         "src.bot.sender.Bot",
         return_value=SimpleNamespace(send_message=mocker.AsyncMock()),
     )
-    mocker.patch("src.bot.sender.AnalyzingTGService", return_value=None, create=True)
+    mocker.patch("src.bot.sender.AnalyzingTGService",
+                 return_value=None, create=True)
 
     try:
         _ = TelegramBot(analyzing_service=None)
@@ -242,7 +252,8 @@ def test_public_analyze_handler_failure_case_pipeline_error(mocker) -> None:
 
 
 def test_public_analyze_handler_success_case(mocker) -> None:
-    bot = build_bot(mocker, PipelineResult.ok("**[L]:** text *So what: why*", "#BTC"))
+    bot = build_bot(mocker, PipelineResult.ok(
+        "**[L]:** text *So what: why*", "#BTC"))
     message = DummyMessage(text="/analyze https://coindesk.com/x")
     message.answer = mocker.AsyncMock()
 
@@ -253,7 +264,7 @@ def test_public_analyze_handler_success_case(mocker) -> None:
 
 def test_public_analize_handler_alias_edge_case(mocker) -> None:
     bot = build_bot(mocker, PipelineResult.ok("x"))
-    message = DummyMessage(text="/analize")
+    message = DummyMessage(text="/analyze")
     message.answer = mocker.AsyncMock()
 
     asyncio.run(bot._public_analize_handler(message))
@@ -263,8 +274,9 @@ def test_public_analize_handler_alias_edge_case(mocker) -> None:
 
 def test_public_analize_handler_alias_success_case_delegates(mocker) -> None:
     bot = build_bot(mocker, PipelineResult.ok("x"))
-    delegated = mocker.patch.object(bot, "_public_analyze_handler", mocker.AsyncMock())
-    message = DummyMessage(text="/analize https://coindesk.com/x")
+    delegated = mocker.patch.object(
+        bot, "_public_analyze_handler", mocker.AsyncMock())
+    message = DummyMessage(text="/analyze https://coindesk.com/x")
     message.answer = mocker.AsyncMock()
 
     asyncio.run(bot._public_analize_handler(message))
@@ -275,9 +287,10 @@ def test_public_analize_handler_alias_success_case_delegates(mocker) -> None:
 def test_public_analize_handler_alias_failure_case_delegates(mocker) -> None:
     bot = build_bot(mocker, PipelineResult.ok("x"))
     delegated = mocker.patch.object(
-        bot, "_public_analyze_handler", mocker.AsyncMock(side_effect=RuntimeError("x"))
+        bot, "_public_analyze_handler", mocker.AsyncMock(
+            side_effect=RuntimeError("x"))
     )
-    message = DummyMessage(text="/analize https://coindesk.com/x")
+    message = DummyMessage(text="/analyze https://coindesk.com/x")
     message.answer = mocker.AsyncMock()
 
     try:
@@ -384,7 +397,7 @@ def test_main_success_case_registers_and_polls(mocker) -> None:
 
     asyncio.run(bot.main())
 
-    assert len(dispatcher.message.calls) == 4
+    assert len(dispatcher.message.calls) == 3
 
 
 def test_main_failure_case_cancelled_polling(mocker) -> None:
@@ -394,7 +407,7 @@ def test_main_failure_case_cancelled_polling(mocker) -> None:
 
     asyncio.run(bot.main())
 
-    assert len(dispatcher.message.calls) == 4
+    assert len(dispatcher.message.calls) == 3
 
 
 def test_main_edge_case_handle_signals_flag(mocker) -> None:
