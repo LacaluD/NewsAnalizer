@@ -66,10 +66,9 @@ jobs:
 
   dependency-review:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/dependency-review-action@v4
+      - uses: actions/checkout@v6.0.3
+      - uses: actions/dependency-review-action@v5.0.0
 
 
   security-audit:
