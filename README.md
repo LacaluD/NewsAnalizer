@@ -14,11 +14,10 @@ Lightweight Telegram bot that fetches CoinDesk articles, extracts factual conten
 ## Current Status
 
 - End-to-end manual flow is working via `python main.py`.
-- Telegram handlers are available: `/start`, `/connection`, `/analyze` (legacy `/analize` is still supported).
+- Telegram handlers are available: `/start`, `/connection`, `/analyze`.
 - Article extraction and 2-step AI analysis are integrated.
 - CI pipeline is active in `.github/workflows/main.yml`.
 - Unit test suite exists in `src/tests/` and is passing.
-- Continuous scheduler is not implemented yet.
 
 ### Local Test Status (latest run)
 
@@ -59,6 +58,23 @@ ADMIN_CHAT_ID=...
 python main.py
 ```
 
+## Docker
+
+Multi-stage build keeps the final image clean — build tools stay in the builder stage only.
+Image size: ~336MB (multi-stage) vs ~350MB (single-stage).
+
+The difference is small because the project uses pure Python dependencies without
+heavy C/Rust-compiled extensions. Multi-stage builds show a larger size reduction
+in projects that require compilation (e.g. numpy, psycopg2, cryptography).
+
+Tested locally — bot starts and connects to Telegram successfully.
+
+### Build comparison
+| Build type   | Image size |
+|--------------|------------|
+| Multi-stage  | 336 MB     |
+| Single-stage | 350 MB     |
+
 ## Testing
 
 Run tests directly (pytest):
@@ -80,29 +96,10 @@ make tests
 make tests-build-cov-report
 ```
 
-The Makefile coverage report command writes a summary to `docs/coverage-report.txt`.
-
 ## Makefile Commands
 
-Common targets:
+Full list of available Makefile commands is documented in [MAKEFILE.md](docs/MAKEFILE.md).
 
-- `make run`: start the bot (`python main.py`)
-- `make install`: install runtime deps from `requirements.txt`
-- `make tests`: run tests via coverage + `configs/pytest.ini`
-- `make tests-build-cov-report`: print coverage and save report
-- `make sec-bandit`: run Bandit and save `docs/bandit-report.txt`
-- `make sec-pip-audit`: run pip-audit and save `docs/pip-audit-report.txt`
-- `make lint`: run mypy over `src/`
-- `make lint-calls`: run stricter mypy call-arg checks
-- `make typecheck`: run ruff + black check
-- `make format`: run ruff --fix + black check
-- `make clean`: remove caches and coverage files
-- `make ci`: run tests + security + formatting + lint sequence
-
-Note on dev dependencies:
-
-- `make install-dev` currently expects `dev-requirements.txt`.
-- Repository contains `dev-requirements.in`; generate `dev-requirements.txt` first (for example, with `pip-compile`) before using `make install-dev`.
 
 ## Usage Example
 
@@ -114,6 +111,8 @@ Analyze one CoinDesk article manually in Telegram:
 
 ## Runtime Pipeline
 
+Full description of pipeline you can find documented in [PIPELINE](docs/PIPELINE.md)
+
 1. Receive article URL from Telegram `/analyze` command.
 2. Download article HTML.
 3. Extract plain text with `trafilatura`.
@@ -123,6 +122,8 @@ Analyze one CoinDesk article manually in Telegram:
 7. Send result to configured admin chat.
 
 ## Project Skeleton
+
+List of all modules is documented in [ARCHITECTURE](docs/ARCHITECTURE.md)
 
 ```text
 .
@@ -191,7 +192,7 @@ Main jobs:
 - pydantic-settings (validated env config)
 - GitHub Actions + bandit + pip-audit + mypy + ruff + black
 
-See also `docs/STACK.md`.
+See also [Stack](docs/STACK.md)
 
 ## Done
 

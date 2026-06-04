@@ -1,6 +1,21 @@
 run:
 	python main.py
 
+docker-build:
+	docker build -t crypto-news-bot:latest .
+
+docker-run:
+	docker run -d --env-file .env crypto-news-bot:latest
+
+docker-stop:
+	docker stop $$(docker ps -q --filter ancestor=crypto-news-bot:latest) || true
+
+docker-rm:
+	docker rm $$(docker ps -aq --filter ancestor=crypto-news-bot:latest) || true
+
+docker-clean: docker-stop docker-rm
+	docker rmi crypto-news-bot:latest
+
 install:
 	pip install -r requirements.txt
 

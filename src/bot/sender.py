@@ -8,15 +8,14 @@ from urllib.parse import urlparse
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, BotCommand
 from loguru import logger
 
+from src.parser import Parser
+from src.ai_core import AIAnalyze
 from src.settings import settings
 from src.bot.bot_utils import BotUtils
 from src.bot.analyzing_service import AnalyzingTGService
-
-from src.ai_core import AIAnalyze
-from src.parser import Parser
 
 
 class TelegramBot:
@@ -102,7 +101,7 @@ class TelegramBot:
         cmd, url = self._parse_analyze_command(message.text)
         if cmd is None or url is None:
             await message.answer(
-                text="Usage: /analyze https://www.coindesk.com/... (legacy /analize is supported)"
+                text="Usage: /analyze https://www.coindesk.com/..."
             )
             return
 
@@ -199,7 +198,12 @@ class TelegramBot:
         self.dp.message.register(self.start_handler, Command("start"))
         self.dp.message.register(self.connection_handler, Command("connection"))
         self.dp.message.register(self._public_analyze_handler, Command("analyze"))
-        self.dp.message.register(self._public_analyze_handler, Command("analize"))
+
+        await self.bot.set_my_commands([
+            BotCommand(command="start", description="Start the bot"),
+            BotCommand(command="connection", description="Check internet connection"),
+            BotCommand(command="analyze", description="Analyze CoinDesk article by URL"),
+        ])
 
         try:
             self.logger.info("Bot is ready to receive new commands")
