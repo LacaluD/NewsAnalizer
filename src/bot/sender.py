@@ -100,9 +100,7 @@ class TelegramBot:
         """Handle `/analyze` command and send analyzed output."""
         cmd, url = self._parse_analyze_command(message.text)
         if cmd is None or url is None:
-            await message.answer(
-                text="Usage: /analyze https://www.coindesk.com/..."
-            )
+            await message.answer(text="Usage: /analyze https://www.coindesk.com/...")
             return
 
         if not self._is_allowed_platform(url):
@@ -199,11 +197,17 @@ class TelegramBot:
         self.dp.message.register(self.connection_handler, Command("connection"))
         self.dp.message.register(self._public_analyze_handler, Command("analyze"))
 
-        await self.bot.set_my_commands([
-            BotCommand(command="start", description="Start the bot"),
-            BotCommand(command="connection", description="Check internet connection"),
-            BotCommand(command="analyze", description="Analyze CoinDesk article by URL"),
-        ])
+        await self.bot.set_my_commands(
+            [
+                BotCommand(command="start", description="Start the bot"),
+                BotCommand(
+                    command="connection", description="Check internet connection"
+                ),
+                BotCommand(
+                    command="analyze", description="Analyze CoinDesk article by URL"
+                ),
+            ]
+        )
 
         try:
             self.logger.info("Bot is ready to receive new commands")
