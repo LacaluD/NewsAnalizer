@@ -1,0 +1,12 @@
+./main.py
+./src/ai_core.py
+./src/bot/analyzing_service.py
+./src/bot/bot_utils.py
+./src/bot/sender.py
+./src/constants.py
+./src/contracts.py
+./src/logger.py
+./src/parser.py
+./src/session_manager.py
+./src/settings.py
+./version.py

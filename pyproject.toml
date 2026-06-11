@@ -28,7 +28,7 @@ exclude = '''
 '''
 
 [tool.ruff.lint]
-select = ["TID252"]  # Forbids relative imports
+select = ["TID252", "I"]  # Forbids relative imports
 
 [tool.coverage.run]
 source = ["src", "main"]

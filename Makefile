@@ -13,8 +13,10 @@ docker-stop:
 docker-rm:
 	docker rm $$(docker ps -aq --filter ancestor=crypto-news-bot:latest) || true
 
-docker-clean: docker-stop docker-rm
-	docker rmi crypto-news-bot:latest
+docker-rmi:
+	docker rmi crypto-news-bot:latest || true
+
+docker-clean: docker-stop docker-rm docker-rmi
 
 install:
 	pip install -r requirements.txt
@@ -38,7 +40,11 @@ sec-pip-audit:
 	pip-audit --format columns | tee docs/pip-audit-report.txt
 
 lint:
-	mypy src/ --ignore-missing-imports --explicit-package-bases --config-file configs/mypy.ini
+	mypy . --config-file configs/mypy.ini -v > docs/mypy-report-verbose.txt 2>&1
+
+	printf '\nChecked files by mypy:\n'
+	sed -n "s/.*BuildSource(path='\([^']*\)'.*/\1/p" docs/mypy-report-verbose.txt \
+	| sort -u | tee docs/mypy-files.txt
 
 lint-calls:
 	mypy src/ --ignore-missing-imports --explicit-package-bases --enable-error-code call-arg --config-file configs/mypy.ini
@@ -48,7 +54,7 @@ typecheck:
 	black --check .
 
 format:
-	ruff check . --fix
+	ruff check . --select I --fix
 	black .
 
 black-diff:
@@ -66,3 +72,5 @@ ci:
 	make sec-pip-audit
 	make typecheck
 	make lint
+	make docker-build
+	make docker-clean

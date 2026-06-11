@@ -1,5 +1,6 @@
-from src.bot.bot_utils import BotUtils
 import requests
+
+from src.bot.bot_utils import BotUtils
 
 
 def test_init_success_case_sets_defaults() -> None:

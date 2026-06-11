@@ -1,18 +1,17 @@
 """Main application entry point."""
 
 from __future__ import annotations
-from typing import Any
 
 import asyncio
+from typing import Any
 
 from src.ai_core import AIAnalyze
-from src.bot.sender import TelegramBot
 from src.bot.analyzing_service import AnalyzingTGService
+from src.bot.sender import TelegramBot
 from src.logger import MainLogger
 from src.parser import Parser
 from src.session_manager import session_manager
-
-from version import __version__, __commit__, __build__
+from version import __build__, __commit__, __version__
 
 
 async def run(tg_bot: TelegramBot, logger: Any) -> None:
