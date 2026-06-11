@@ -1,12 +1,12 @@
 """Service layer used by Telegram bot handlers."""
 
 from __future__ import annotations
-from typing_extensions import TYPE_CHECKING
 
 from loguru import logger
+from typing_extensions import TYPE_CHECKING
 
-from src.contracts import PipelineResult
 from src.ai_core import AIAnalyze
+from src.contracts import PipelineResult
 
 if TYPE_CHECKING:
     from src.parser import Parser

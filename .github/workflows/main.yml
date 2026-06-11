@@ -7,9 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  merge_group:
-    branches:
-      - main
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -26,8 +23,6 @@ jobs:
         python-version: ["3.12", "3.11", "3.10"]
     steps:
       - uses: actions/checkout@v6.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6.2.0
@@ -69,7 +64,7 @@ jobs:
 
   dependency-review:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target' || github.event_name == 'merge_group'
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
     steps:
       - uses: actions/checkout@v6.0.3
       - uses: actions/dependency-review-action@v5.0.0
@@ -80,14 +75,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6.2.0
         with:
-          python-version: 3.12
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
@@ -134,14 +126,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
-
       - name: Set up Python 3.12
         uses: actions/setup-python@v6.2.0
         with:
-          python-version: 3.12
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
@@ -153,7 +141,7 @@ jobs:
         run: |
           mkdir -p docs
           set -o pipefail
-          mypy . --config-file configs/mypy.ini -v 2>docs/mypy-report-verbose.txt | tee docs/mypy-report.txt
+          mypy . --config-file configs/mypy.ini -v > docs/mypy-report-verbose.txt 2>&1
 
           printf '\nChecked files by mypy:\n'
           sed -n "s/.*BuildSource(path='\([^']*\)'.*/\1/p" docs/mypy-report-verbose.txt \
@@ -165,7 +153,7 @@ jobs:
         uses: actions/upload-artifact@v7.0.0
         with:
           name: mypy-report
-          path: docs/mypy-report.txt
+          path: docs/mypy-report-verbose.txt
 
 
   formatting:
@@ -191,9 +179,21 @@ jobs:
           ruff check .
           black --check .
 
+
+  build_docker_image:
+    needs: [tests, security-audit, typecheck, formatting, dependency-review]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.0
+      - name: Build Docker image
+        run: |
+          make docker-build
+        shell: bash
+
+
   notify:
-    needs: [tests, security-audit, typecheck, formatting]
-    if: always()
+    needs: [tests, security-audit, typecheck, formatting, build_docker_image]
+    if: always() && (github.event_name != 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - name: Download all reports artifact

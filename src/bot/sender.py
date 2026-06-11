@@ -8,14 +8,14 @@ from urllib.parse import urlparse
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
-from aiogram.types import Message, BotCommand
+from aiogram.types import BotCommand, Message
 from loguru import logger
 
-from src.parser import Parser
 from src.ai_core import AIAnalyze
-from src.settings import settings
-from src.bot.bot_utils import BotUtils
 from src.bot.analyzing_service import AnalyzingTGService
+from src.bot.bot_utils import BotUtils
+from src.parser import Parser
+from src.settings import settings
 
 
 class TelegramBot:

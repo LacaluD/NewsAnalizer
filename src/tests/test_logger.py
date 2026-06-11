@@ -1,5 +1,5 @@
-from pathlib import Path
 import traceback
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest

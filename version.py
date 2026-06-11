@@ -1,9 +1,9 @@
-import subprocess
+import subprocess  # nosec B404
 
 __version__ = "1.0.0"
 
 try:
-    __build__ = (
+    __build__ = (  # nosec B603 B607
         subprocess.check_output(
             ["git", "rev-list", "--count", "HEAD"],
             stderr=subprocess.DEVNULL,
@@ -11,7 +11,7 @@ try:
         .decode()
         .strip()
     )
-    __commit__ = (
+    __commit__ = (  # nosec B603 B607
         subprocess.check_output(
             ["git", "rev-parse", "--short", "HEAD"],
             stderr=subprocess.DEVNULL,
